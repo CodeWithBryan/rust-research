@@ -9,13 +9,13 @@ using UnityEngine;
 // Token: 0x02000714 RID: 1812
 public class ConnectionAuth : MonoBehaviour
 {
-	// Token: 0x0600320B RID: 12811 RVA: 0x0013379D File Offset: 0x0013199D
+	// Token: 0x0600320B RID: 12811
 	public bool IsAuthed(ulong iSteamID)
 	{
 		return BasePlayer.FindByID(iSteamID) || SingletonComponent<ServerMgr>.Instance.connectionQueue.IsJoining(iSteamID) || SingletonComponent<ServerMgr>.Instance.connectionQueue.IsQueued(iSteamID);
 	}
 
-	// Token: 0x0600320C RID: 12812 RVA: 0x001337D7 File Offset: 0x001319D7
+	// Token: 0x0600320C RID: 12812
 	public static void Reject(Connection connection, string strReason, string strReasonPrivate = null)
 	{
 		DebugEx.Log(connection.ToString() + " Rejecting connection - " + (string.IsNullOrEmpty(strReasonPrivate) ? strReason : strReasonPrivate), StackTraceLogType.None);
@@ -23,22 +23,25 @@ public class ConnectionAuth : MonoBehaviour
 		ConnectionAuth.m_AuthConnection.Remove(connection);
 	}
 
-	// Token: 0x0600320D RID: 12813 RVA: 0x00133814 File Offset: 0x00131A14
+	// Token: 0x0600320D RID: 12813
 	public static void OnDisconnect(Connection connection)
 	{
 		ConnectionAuth.m_AuthConnection.Remove(connection);
 	}
 
-	// Token: 0x0600320E RID: 12814 RVA: 0x00133822 File Offset: 0x00131A22
+	// Token: 0x0600320E RID: 12814
 	public void Approve(Connection connection)
 	{
+		Debug.Log("ConnectionAuth:Approve");
+		Debug.Log("Connection Authenticated... Joining Connection Queue");
 		ConnectionAuth.m_AuthConnection.Remove(connection);
 		SingletonComponent<ServerMgr>.Instance.connectionQueue.Join(connection);
 	}
 
-	// Token: 0x0600320F RID: 12815 RVA: 0x00133840 File Offset: 0x00131A40
+	// Token: 0x0600320F RID: 12815
 	public void OnNewConnection(Connection connection)
 	{
+		Debug.Log("ConnectionAuth:OnNewConnection");
 		connection.connected = false;
 		if (connection.token == null || connection.token.Length < 32)
 		{
@@ -89,13 +92,15 @@ public class ConnectionAuth : MonoBehaviour
 			DebugEx.Log(connection.ToString() + " is a developer", StackTraceLogType.None);
 			connection.authLevel = 3U;
 		}
+		Debug.Log("Starting AuthRoutine");
 		ConnectionAuth.m_AuthConnection.Add(connection);
 		base.StartCoroutine(this.AuthorisationRoutine(connection));
 	}
 
-	// Token: 0x06003210 RID: 12816 RVA: 0x00133A03 File Offset: 0x00131C03
+	// Token: 0x06003210 RID: 12816
 	public IEnumerator AuthorisationRoutine(Connection connection)
 	{
+		Debug.Log("ConnectionAuth:AuthorisationRoutine");
 		yield return base.StartCoroutine(Auth_Steam.Run(connection));
 		yield return base.StartCoroutine(Auth_EAC.Run(connection));
 		yield return base.StartCoroutine(Auth_CentralizedBans.Run(connection));

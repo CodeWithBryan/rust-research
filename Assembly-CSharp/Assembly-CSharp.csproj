@@ -3041,11 +3041,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Facepunch.Network\Facepunch.Network.csproj">
-      <Project>{6da5f018-f073-4ecf-8704-3465ba7902c3}</Project>
+      <Project>{1a6f7f06-26f2-4baa-9500-dcf48c27f0ea}</Project>
       <Name>Facepunch.Network</Name>
     </ProjectReference>
     <ProjectReference Include="..\Facepunch.Raknet\Facepunch.Raknet.csproj">
-      <Project>{6da5f018-f073-4ecf-8704-3465ba7902c4}</Project>
+      <Project>{1a6f7f06-26f2-4baa-9500-dcf48c27f0eb}</Project>
       <Name>Facepunch.Raknet</Name>
     </ProjectReference>
   </ItemGroup>

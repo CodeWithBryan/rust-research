@@ -10,7 +10,7 @@ namespace Network
 	public abstract class Server : BaseNetwork
 	{
 		// Token: 0x17000029 RID: 41
-		// (get) Token: 0x060000F3 RID: 243 RVA: 0x0000443E File Offset: 0x0000263E
+		// (get) Token: 0x060000F3 RID: 243
 		protected override float MaxReceiveTimeValue
 		{
 			get
@@ -20,7 +20,7 @@ namespace Network
 		}
 
 		// Token: 0x1700002A RID: 42
-		// (get) Token: 0x060000F4 RID: 244 RVA: 0x00004445 File Offset: 0x00002645
+		// (get) Token: 0x060000F4 RID: 244
 		protected override int MaxReadQueueValue
 		{
 			get
@@ -30,7 +30,7 @@ namespace Network
 		}
 
 		// Token: 0x1700002B RID: 43
-		// (get) Token: 0x060000F5 RID: 245 RVA: 0x0000444C File Offset: 0x0000264C
+		// (get) Token: 0x060000F5 RID: 245
 		protected override int MaxWriteQueueValue
 		{
 			get
@@ -40,7 +40,7 @@ namespace Network
 		}
 
 		// Token: 0x1700002C RID: 44
-		// (get) Token: 0x060000F6 RID: 246 RVA: 0x00004453 File Offset: 0x00002653
+		// (get) Token: 0x060000F6 RID: 246
 		protected override int MaxDecryptQueueValue
 		{
 			get
@@ -50,7 +50,7 @@ namespace Network
 		}
 
 		// Token: 0x1700002D RID: 45
-		// (get) Token: 0x060000F7 RID: 247 RVA: 0x0000445A File Offset: 0x0000265A
+		// (get) Token: 0x060000F7 RID: 247
 		public virtual string ProtocolId
 		{
 			get
@@ -59,24 +59,24 @@ namespace Network
 			}
 		}
 
-		// Token: 0x060000F8 RID: 248 RVA: 0x00004461 File Offset: 0x00002661
+		// Token: 0x060000F8 RID: 248
 		public void Reset()
 		{
 			this.ResetUIDs();
 		}
 
-		// Token: 0x060000F9 RID: 249 RVA: 0x00002ED8 File Offset: 0x000010D8
+		// Token: 0x060000F9 RID: 249
 		public virtual bool Start()
 		{
 			return true;
 		}
 
-		// Token: 0x060000FA RID: 250 RVA: 0x00002209 File Offset: 0x00000409
+		// Token: 0x060000FA RID: 250
 		public virtual void Stop(string shutdownMsg)
 		{
 		}
 
-		// Token: 0x060000FB RID: 251 RVA: 0x00002209 File Offset: 0x00000409
+		// Token: 0x060000FB RID: 251
 		public virtual void Flush(Connection cn)
 		{
 		}
@@ -87,7 +87,7 @@ namespace Network
 		// Token: 0x060000FD RID: 253
 		public abstract void Kick(Connection cn, string message, bool logfile = false);
 
-		// Token: 0x060000FE RID: 254 RVA: 0x00004469 File Offset: 0x00002669
+		// Token: 0x060000FE RID: 254
 		public uint TakeUID()
 		{
 			if (this.lastValueGiven > 4294967263U)
@@ -98,12 +98,12 @@ namespace Network
 			return this.lastValueGiven;
 		}
 
-		// Token: 0x060000FF RID: 255 RVA: 0x00002209 File Offset: 0x00000409
+		// Token: 0x060000FF RID: 255
 		public void ReturnUID(uint uid)
 		{
 		}
 
-		// Token: 0x06000100 RID: 256 RVA: 0x000044A3 File Offset: 0x000026A3
+		// Token: 0x06000100 RID: 256
 		public void RegisterUID(uint uid)
 		{
 			if (uid > this.lastValueGiven)
@@ -112,13 +112,13 @@ namespace Network
 			}
 		}
 
-		// Token: 0x06000101 RID: 257 RVA: 0x000044B5 File Offset: 0x000026B5
+		// Token: 0x06000101 RID: 257
 		internal void ResetUIDs()
 		{
 			this.lastValueGiven = 1024U;
 		}
 
-		// Token: 0x06000102 RID: 258 RVA: 0x000044C2 File Offset: 0x000026C2
+		// Token: 0x06000102 RID: 258
 		public Networkable CreateNetworkable()
 		{
 			Networkable networkable = Pool.Get<Networkable>();
@@ -127,7 +127,7 @@ namespace Network
 			return networkable;
 		}
 
-		// Token: 0x06000103 RID: 259 RVA: 0x000044DC File Offset: 0x000026DC
+		// Token: 0x06000103 RID: 259
 		public Networkable CreateNetworkable(uint uid)
 		{
 			Networkable networkable = Pool.Get<Networkable>();
@@ -137,14 +137,14 @@ namespace Network
 			return networkable;
 		}
 
-		// Token: 0x06000104 RID: 260 RVA: 0x00002C0F File Offset: 0x00000E0F
+		// Token: 0x06000104 RID: 260
 		public void DestroyNetworkable(ref Networkable networkable)
 		{
 			networkable.Destroy();
 			Pool.Free<Networkable>(ref networkable);
 		}
 
-		// Token: 0x06000105 RID: 261 RVA: 0x000044F8 File Offset: 0x000026F8
+		// Token: 0x06000105 RID: 261
 		protected void OnDisconnected(string strReason, Connection cn)
 		{
 			if (cn == null)
@@ -160,7 +160,7 @@ namespace Network
 			this.RemoveConnection(cn);
 		}
 
-		// Token: 0x06000106 RID: 262 RVA: 0x00004528 File Offset: 0x00002728
+		// Token: 0x06000106 RID: 262
 		protected Connection FindConnection(ulong guid)
 		{
 			Connection result;
@@ -171,9 +171,10 @@ namespace Network
 			return null;
 		}
 
-		// Token: 0x06000107 RID: 263 RVA: 0x00004548 File Offset: 0x00002748
+		// Token: 0x06000107 RID: 263
 		protected virtual void OnNewConnection(ulong guid, string ipaddress)
 		{
+			Debug.Log("OnNewConnection 1");
 			if (string.IsNullOrEmpty(ipaddress) || ipaddress == "UNASSIGNED_SYSTEM_ADDRESS")
 			{
 				return;
@@ -186,9 +187,10 @@ namespace Network
 			});
 		}
 
-		// Token: 0x06000108 RID: 264 RVA: 0x00004590 File Offset: 0x00002790
+		// Token: 0x06000108 RID: 264
 		protected virtual void OnNewConnection(Connection connection)
 		{
+			Debug.Log("OnNewConnection 2");
 			connection.connectionTime = TimeEx.realtimeSinceStartup;
 			this.connections.Add(connection);
 			this.connectionByGUID.Add(connection.guid, connection);
@@ -212,7 +214,7 @@ namespace Network
 			netWrite.Send(new SendInfo(connection));
 		}
 
-		// Token: 0x06000109 RID: 265 RVA: 0x00004634 File Offset: 0x00002834
+		// Token: 0x06000109 RID: 265
 		protected void RemoveConnection(Connection connection)
 		{
 			if (this.LimitConnectionsPerIP())
@@ -234,13 +236,13 @@ namespace Network
 			connection.OnDisconnected();
 		}
 
-		// Token: 0x0600010A RID: 266 RVA: 0x00002ED8 File Offset: 0x000010D8
+		// Token: 0x0600010A RID: 266
 		public virtual bool LimitConnectionsPerIP()
 		{
 			return true;
 		}
 
-		// Token: 0x0600010B RID: 267 RVA: 0x000021A0 File Offset: 0x000003A0
+		// Token: 0x0600010B RID: 267
 		public virtual int GetAveragePing(Connection connection)
 		{
 			return 0;

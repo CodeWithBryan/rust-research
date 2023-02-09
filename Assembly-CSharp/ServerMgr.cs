@@ -21,7 +21,7 @@ using UnityEngine;
 // Token: 0x02000718 RID: 1816
 public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 {
-	// Token: 0x0600323D RID: 12861 RVA: 0x001349B0 File Offset: 0x00132BB0
+	// Token: 0x0600323D RID: 12861
 	private void Log(Exception e)
 	{
 		if (ConVar.Global.developer > 0)
@@ -30,7 +30,7 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		}
 	}
 
-	// Token: 0x0600323E RID: 12862 RVA: 0x001349C0 File Offset: 0x00132BC0
+	// Token: 0x0600323E RID: 12862
 	public void OnNetworkMessage(Message packet)
 	{
 		if (ConVar.Server.packetlog_enabled)
@@ -38,6 +38,7 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 			this.packetHistory.Increment(packet.type);
 		}
 		Message.Type type = packet.type;
+		Debug.Log("OnNetworkMessage: " + type);
 		if (type != Message.Type.Ready)
 		{
 			switch (type)
@@ -261,7 +262,7 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		packet.connection.AddPacketsPerSecond(packet.type);
 	}
 
-	// Token: 0x0600323F RID: 12863 RVA: 0x00135024 File Offset: 0x00133224
+	// Token: 0x0600323F RID: 12863
 	public void ProcessUnhandledPacket(Message packet)
 	{
 		if (ConVar.Global.developer > 0)
@@ -271,7 +272,7 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		Network.Net.sv.Kick(packet.connection, "Sent Unhandled Message", false);
 	}
 
-	// Token: 0x06003240 RID: 12864 RVA: 0x00135060 File Offset: 0x00133260
+	// Token: 0x06003240 RID: 12864
 	public void ReadDisconnectReason(Message packet)
 	{
 		string text = packet.read.String(4096);
@@ -282,7 +283,7 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		}
 	}
 
-	// Token: 0x06003241 RID: 12865 RVA: 0x001350AC File Offset: 0x001332AC
+	// Token: 0x06003241 RID: 12865
 	private global::BasePlayer SpawnPlayerSleeping(Network.Connection connection)
 	{
 		global::BasePlayer basePlayer = global::BasePlayer.FindSleeping(connection.userid);
@@ -310,7 +311,7 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		return basePlayer;
 	}
 
-	// Token: 0x06003242 RID: 12866 RVA: 0x00135168 File Offset: 0x00133368
+	// Token: 0x06003242 RID: 12866
 	private global::BasePlayer SpawnNewPlayer(Network.Connection connection)
 	{
 		global::BasePlayer.SpawnPoint spawnPoint = ServerMgr.FindSpawnPoint(null);
@@ -343,9 +344,10 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		return basePlayer;
 	}
 
-	// Token: 0x06003243 RID: 12867 RVA: 0x001352C4 File Offset: 0x001334C4
+	// Token: 0x06003243 RID: 12867
 	private void ClientReady(Message packet)
 	{
+		Debug.Log("ServerMgr:ClientReady");
 		if (packet.connection.state != Network.Connection.State.Welcoming)
 		{
 			Network.Net.sv.Kick(packet.connection, "Invalid connection state", false);
@@ -355,6 +357,7 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		{
 			foreach (ClientReady.ClientInfo clientInfo in clientReady.clientInfo)
 			{
+				Debug.Log("CL: " + clientInfo.name + " - " + clientInfo.value);
 				packet.connection.info.Set(clientInfo.name, clientInfo.value);
 			}
 			this.connectionQueue.JoinedGame(packet.connection);
@@ -381,7 +384,7 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		ServerMgr.SendReplicatedVars(packet.connection);
 	}
 
-	// Token: 0x06003244 RID: 12868 RVA: 0x00135438 File Offset: 0x00133638
+	// Token: 0x06003244 RID: 12868
 	private void OnRPCMessage(Message packet)
 	{
 		uint uid = packet.read.UInt32();
@@ -398,7 +401,7 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		baseEntity.SV_RPCMessage(num, packet);
 	}
 
-	// Token: 0x06003245 RID: 12869 RVA: 0x00135494 File Offset: 0x00133694
+	// Token: 0x06003245 RID: 12869
 	private void OnPlayerTick(Message packet)
 	{
 		global::BasePlayer basePlayer = packet.Player();
@@ -409,7 +412,7 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		basePlayer.OnReceivedTick(packet.read);
 	}
 
-	// Token: 0x06003246 RID: 12870 RVA: 0x001354C0 File Offset: 0x001336C0
+	// Token: 0x06003246 RID: 12870
 	private void OnPlayerVoice(Message packet)
 	{
 		global::BasePlayer basePlayer = packet.Player();
@@ -420,9 +423,10 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		basePlayer.OnReceivedVoice(packet.read.BytesWithSize(10485760U));
 	}
 
-	// Token: 0x06003247 RID: 12871 RVA: 0x001354F4 File Offset: 0x001336F4
+	// Token: 0x06003247 RID: 12871
 	private void OnGiveUserInformation(Message packet)
 	{
+		Debug.Log("OnGiveUserInformation");
 		if (packet.connection.state != Network.Connection.State.Unconnected)
 		{
 			Network.Net.sv.Kick(packet.connection, "Invalid connection state", false);
@@ -438,6 +442,11 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		packet.connection.protocol = packet.read.UInt32();
 		packet.connection.os = packet.read.String(128);
 		packet.connection.username = packet.read.String(256);
+		Debug.Log("New User Connecting... ");
+		Debug.Log("SteamID: " + packet.connection.userid);
+		Debug.Log("protocol: " + packet.connection.protocol);
+		Debug.Log("os: " + packet.connection.os);
+		Debug.Log("username: " + packet.connection.username);
 		if (string.IsNullOrEmpty(packet.connection.os))
 		{
 			throw new Exception("Invalid OS");
@@ -512,11 +521,11 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 	}
 
 	// Token: 0x170003ED RID: 1005
-	// (get) Token: 0x06003248 RID: 12872 RVA: 0x0013585C File Offset: 0x00133A5C
-	// (set) Token: 0x06003249 RID: 12873 RVA: 0x00135864 File Offset: 0x00133A64
+	// (get) Token: 0x06003248 RID: 12872
+	// (set) Token: 0x06003249 RID: 12873
 	public bool runFrameUpdate { get; private set; }
 
-	// Token: 0x0600324A RID: 12874 RVA: 0x00135870 File Offset: 0x00133A70
+	// Token: 0x0600324A RID: 12874
 	public void Initialize(bool loadSave = true, string saveFile = "", bool allowOutOfDateSaves = false, bool skipInitialSpawn = false)
 	{
 		this.persistance = new UserPersistance(ConVar.Server.rootFolder);
@@ -557,7 +566,7 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		this.auth = base.GetComponent<ConnectionAuth>();
 	}
 
-	// Token: 0x0600324B RID: 12875 RVA: 0x00135994 File Offset: 0x00133B94
+	// Token: 0x0600324B RID: 12875
 	public void OpenConnection()
 	{
 		if (ConVar.Server.queryport <= 0 || ConVar.Server.queryport == ConVar.Server.port)
@@ -582,7 +591,7 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		ConsoleSystem.OnReplicatedVarChanged += ServerMgr.OnReplicatedVarChanged;
 	}
 
-	// Token: 0x0600324C RID: 12876 RVA: 0x00135A74 File Offset: 0x00133C74
+	// Token: 0x0600324C RID: 12876
 	private void CloseConnection()
 	{
 		if (this.persistance != null)
@@ -615,7 +624,7 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		ConsoleSystem.OnReplicatedVarChanged -= ServerMgr.OnReplicatedVarChanged;
 	}
 
-	// Token: 0x0600324D RID: 12877 RVA: 0x00135B7C File Offset: 0x00133D7C
+	// Token: 0x0600324D RID: 12877
 	private void OnDisable()
 	{
 		if (Rust.Application.isQuitting)
@@ -625,14 +634,14 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		this.CloseConnection();
 	}
 
-	// Token: 0x0600324E RID: 12878 RVA: 0x00135B8C File Offset: 0x00133D8C
+	// Token: 0x0600324E RID: 12878
 	private void OnApplicationQuit()
 	{
 		Rust.Application.isQuitting = true;
 		this.CloseConnection();
 	}
 
-	// Token: 0x0600324F RID: 12879 RVA: 0x00135B9A File Offset: 0x00133D9A
+	// Token: 0x0600324F RID: 12879
 	private void CreateImportantEntities()
 	{
 		this.CreateImportantEntity<EnvSync>("assets/bundled/prefabs/system/net_env.prefab");
@@ -642,7 +651,7 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		this.CreateImportantEntity<TreeManager>("assets/bundled/prefabs/system/tree_manager.prefab");
 	}
 
-	// Token: 0x06003250 RID: 12880 RVA: 0x00135BD4 File Offset: 0x00133DD4
+	// Token: 0x06003250 RID: 12880
 	public void CreateImportantEntity<T>(string prefabName) where T : global::BaseEntity
 	{
 		if (global::BaseNetworkable.serverEntities.Any((global::BaseNetworkable x) => x is T))
@@ -659,7 +668,7 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		baseEntity.Spawn();
 	}
 
-	// Token: 0x06003251 RID: 12881 RVA: 0x00135C6C File Offset: 0x00133E6C
+	// Token: 0x06003251 RID: 12881
 	private void StartSteamServer()
 	{
 		PlatformService.Instance.Initialize(RustPlatformHooks.Instance);
@@ -668,17 +677,16 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		DebugEx.Log("SteamServer Initialized", StackTraceLogType.None);
 	}
 
-	// Token: 0x06003252 RID: 12882 RVA: 0x00135CBE File Offset: 0x00133EBE
+	// Token: 0x06003252 RID: 12882
 	private void UpdateItemDefinitions()
 	{
 		Debug.Log("Checking for new Steam Item Definitions..");
 		PlatformService.Instance.RefreshItemDefinitions();
 	}
 
-	// Token: 0x06003253 RID: 12883 RVA: 0x00135CD4 File Offset: 0x00133ED4
+	// Token: 0x06003253 RID: 12883
 	internal void OnValidateAuthTicketResponse(ulong SteamId, ulong OwnerId, global::AuthResponse Status)
 	{
-
 		if (Auth_Steam.ValidateConnecting(SteamId, OwnerId, Status))
 		{
 			return;
@@ -720,7 +728,7 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 	}
 
 	// Token: 0x170003EE RID: 1006
-	// (get) Token: 0x06003254 RID: 12884 RVA: 0x00135E48 File Offset: 0x00134048
+	// (get) Token: 0x06003254 RID: 12884
 	public static int AvailableSlots
 	{
 		get
@@ -729,7 +737,7 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		}
 	}
 
-	// Token: 0x06003255 RID: 12885 RVA: 0x00135E5C File Offset: 0x0013405C
+	// Token: 0x06003255 RID: 12885
 	private void Update()
 	{
 		if (!this.runFrameUpdate)
@@ -1013,7 +1021,7 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		}
 	}
 
-	// Token: 0x06003256 RID: 12886 RVA: 0x00136724 File Offset: 0x00134924
+	// Token: 0x06003256 RID: 12886
 	private void LateUpdate()
 	{
 		if (!this.runFrameUpdate)
@@ -1043,7 +1051,7 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		}
 	}
 
-	// Token: 0x06003257 RID: 12887 RVA: 0x001367E8 File Offset: 0x001349E8
+	// Token: 0x06003257 RID: 12887
 	private void FixedUpdate()
 	{
 		using (TimeWarning.New("ServerMgr.FixedUpdate", 0))
@@ -1075,7 +1083,7 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		}
 	}
 
-	// Token: 0x06003258 RID: 12888 RVA: 0x001368B0 File Offset: 0x00134AB0
+	// Token: 0x06003258 RID: 12888
 	private void DoTick()
 	{
 		RCon.Update();
@@ -1090,14 +1098,14 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		}
 	}
 
-	// Token: 0x06003259 RID: 12889 RVA: 0x00136919 File Offset: 0x00134B19
+	// Token: 0x06003259 RID: 12889
 	private void DoHeartbeat()
 	{
 		ItemManager.Heartbeat();
 	}
 
 	// Token: 0x170003EF RID: 1007
-	// (get) Token: 0x0600325A RID: 12890 RVA: 0x00136920 File Offset: 0x00134B20
+	// (get) Token: 0x0600325A RID: 12890
 	private string AssemblyHash
 	{
 		get
@@ -1121,7 +1129,7 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		}
 	}
 
-	// Token: 0x0600325B RID: 12891 RVA: 0x00136998 File Offset: 0x00134B98
+	// Token: 0x0600325B RID: 12891
 	private static BaseGameMode Gamemode()
 	{
 		BaseGameMode activeGameMode = BaseGameMode.GetActiveGameMode(true);
@@ -1132,21 +1140,21 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		return activeGameMode;
 	}
 
-	// Token: 0x0600325C RID: 12892 RVA: 0x001369B8 File Offset: 0x00134BB8
+	// Token: 0x0600325C RID: 12892
 	public static string GamemodeName()
 	{
 		BaseGameMode baseGameMode = ServerMgr.Gamemode();
 		return ((baseGameMode != null) ? baseGameMode.shortname : null) ?? "rust";
 	}
 
-	// Token: 0x0600325D RID: 12893 RVA: 0x001369D4 File Offset: 0x00134BD4
+	// Token: 0x0600325D RID: 12893
 	public static string GamemodeTitle()
 	{
 		BaseGameMode baseGameMode = ServerMgr.Gamemode();
 		return ((baseGameMode != null) ? baseGameMode.gamemodeTitle : null) ?? "Survival";
 	}
 
-	// Token: 0x0600325E RID: 12894 RVA: 0x001369F0 File Offset: 0x00134BF0
+	// Token: 0x0600325E RID: 12894
 	private void UpdateServerInformation()
 	{
 		if (!SteamServer.IsValid)
@@ -1235,7 +1243,7 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		}
 	}
 
-	// Token: 0x0600325F RID: 12895 RVA: 0x00136DB0 File Offset: 0x00134FB0
+	// Token: 0x0600325F RID: 12895
 	public void OnDisconnected(string strReason, Network.Connection connection)
 	{
 		this.connectionQueue.RemoveConnection(connection);
@@ -1249,7 +1257,7 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		}
 	}
 
-	// Token: 0x06003260 RID: 12896 RVA: 0x00136DFF File Offset: 0x00134FFF
+	// Token: 0x06003260 RID: 12896
 	public static void OnEnterVisibility(Network.Connection connection, Group group)
 	{
 		if (!Network.Net.sv.IsConnected())
@@ -1262,7 +1270,7 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		netWrite.Send(new SendInfo(connection));
 	}
 
-	// Token: 0x06003261 RID: 12897 RVA: 0x00136E38 File Offset: 0x00135038
+	// Token: 0x06003261 RID: 12897
 	public static void OnLeaveVisibility(Network.Connection connection, Group group)
 	{
 		if (!Network.Net.sv.IsConnected())
@@ -1279,7 +1287,7 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		netWrite2.Send(new SendInfo(connection));
 	}
 
-	// Token: 0x06003262 RID: 12898 RVA: 0x00136EA4 File Offset: 0x001350A4
+	// Token: 0x06003262 RID: 12898
 	public void SpawnMapEntities()
 	{
 		new PrefabPreProcess(false, true, false);
@@ -1299,7 +1307,7 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		}
 	}
 
-	// Token: 0x06003263 RID: 12899 RVA: 0x00136F14 File Offset: 0x00135114
+	// Token: 0x06003263 RID: 12899
 	public static global::BasePlayer.SpawnPoint FindSpawnPoint(global::BasePlayer forPlayer = null)
 	{
 		bool flag = false;
@@ -1345,9 +1353,10 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		return spawnPoint2;
 	}
 
-	// Token: 0x06003264 RID: 12900 RVA: 0x00137010 File Offset: 0x00135210
+	// Token: 0x06003264 RID: 12900
 	public void JoinGame(Network.Connection connection)
 	{
+		Debug.Log("ServerMgr:JoinGame");
 		using (Approval approval = Facepunch.Pool.Get<Approval>())
 		{
 			uint num = (uint)ConVar.Server.encryption;
@@ -1368,6 +1377,16 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 			approval.hostname = ConVar.Server.hostname;
 			approval.official = ConVar.Server.official;
 			approval.encryption = num;
+			Debug.Log("Sending Approved Packet...");
+			Debug.Log("Level: " + approval.level);
+			Debug.Log("levelTransfer: " + approval.levelTransfer.ToString());
+			Debug.Log("levelUrl: " + approval.levelUrl);
+			Debug.Log("levelSeed: " + approval.levelSeed);
+			Debug.Log("levelSize: " + approval.levelSize);
+			Debug.Log("checksum: " + approval.checksum);
+			Debug.Log("hostname: " + approval.hostname);
+			Debug.Log("official: " + approval.official.ToString());
+			Debug.Log("encryption: " + approval.encryption);
 			NetWrite netWrite = Network.Net.sv.StartWrite();
 			netWrite.PacketID(Message.Type.Approved);
 			approval.WriteToStream(netWrite);
@@ -1378,7 +1397,7 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 	}
 
 	// Token: 0x170003F0 RID: 1008
-	// (get) Token: 0x06003265 RID: 12901 RVA: 0x0013710C File Offset: 0x0013530C
+	// (get) Token: 0x06003265 RID: 12901
 	public bool Restarting
 	{
 		get
@@ -1387,7 +1406,7 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		}
 	}
 
-	// Token: 0x06003266 RID: 12902 RVA: 0x00137118 File Offset: 0x00135318
+	// Token: 0x06003266 RID: 12902
 	internal void Shutdown()
 	{
 		global::BasePlayer[] array = global::BasePlayer.activePlayerList.ToArray<global::BasePlayer>();
@@ -1399,7 +1418,7 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		ConsoleSystem.Run(ConsoleSystem.Option.Server, "server.writecfg", Array.Empty<object>());
 	}
 
-	// Token: 0x06003267 RID: 12903 RVA: 0x00137175 File Offset: 0x00135375
+	// Token: 0x06003267 RID: 12903
 	private IEnumerator ServerRestartWarning(string info, int iSeconds)
 	{
 		if (iSeconds < 0)
@@ -1448,7 +1467,7 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		yield break;
 	}
 
-	// Token: 0x06003268 RID: 12904 RVA: 0x0013718C File Offset: 0x0013538C
+	// Token: 0x06003268 RID: 12904
 	public static void RestartServer(string strNotice, int iSeconds)
 	{
 		if (SingletonComponent<ServerMgr>.Instance == null)
@@ -1471,7 +1490,7 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		SingletonComponent<ServerMgr>.Instance.UpdateServerInformation();
 	}
 
-	// Token: 0x06003269 RID: 12905 RVA: 0x00137234 File Offset: 0x00135434
+	// Token: 0x06003269 RID: 12905
 	public static void SendReplicatedVars(string filter)
 	{
 		NetWrite netWrite = Network.Net.sv.StartWrite();
@@ -1503,7 +1522,7 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		Facepunch.Pool.FreeList<Network.Connection>(ref list);
 	}
 
-	// Token: 0x0600326A RID: 12906 RVA: 0x00137380 File Offset: 0x00135580
+	// Token: 0x0600326A RID: 12906
 	public static void SendReplicatedVars(Network.Connection connection)
 	{
 		NetWrite netWrite = Network.Net.sv.StartWrite();
@@ -1518,7 +1537,7 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		netWrite.Send(new SendInfo(connection));
 	}
 
-	// Token: 0x0600326B RID: 12907 RVA: 0x00137410 File Offset: 0x00135610
+	// Token: 0x0600326B RID: 12907
 	private static void OnReplicatedVarChanged(string fullName, string value)
 	{
 		NetWrite netWrite = Network.Net.sv.StartWrite();
