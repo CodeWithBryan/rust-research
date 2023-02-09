@@ -1,0 +1,2 @@
+D:\Rust\Dev\DLLs\Facepunch.Network\obj\Debug\Facepunch.Network.csproj.AssemblyReference.cache
+D:\Rust\Dev\DLLs\Facepunch.Network\obj\Debug\Facepunch.Network.csproj.CoreCompileInputs.cache

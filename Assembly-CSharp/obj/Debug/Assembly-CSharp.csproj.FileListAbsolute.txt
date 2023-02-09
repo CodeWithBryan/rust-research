@@ -1,0 +1,2 @@
+D:\Rust\Dev\DLLs\Assembly-CSharp\obj\Debug\Assembly-CSharp.csproj.AssemblyReference.cache
+D:\Rust\Dev\DLLs\Assembly-CSharp\obj\Debug\Assembly-CSharp.csproj.CoreCompileInputs.cache

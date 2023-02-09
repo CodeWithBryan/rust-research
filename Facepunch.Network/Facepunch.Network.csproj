@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{6DA5F018-F073-4ECF-8704-3465BA7902C3}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Facepunch.Network</RootNamespace>
+    <AssemblyName>Facepunch.Network</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Facepunch.System">
+      <HintPath>..\..\rustserver\RustDedicated_Data\Managed\Facepunch.System.dll</HintPath>
+    </Reference>
+    <Reference Include="Facepunch.UnityEngine">
+      <HintPath>..\..\rustserver\RustDedicated_Data\Managed\Facepunch.UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="Rust.Data">
+      <HintPath>..\..\rustserver\RustDedicated_Data\Managed\Rust.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Rust.Demo">
+      <HintPath>..\..\rustserver\RustDedicated_Data\Managed\Rust.Demo.dll</HintPath>
+    </Reference>
+    <Reference Include="System">
+      <HintPath>..\..\rustserver\RustDedicated_Data\Managed\System.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Buffers">
+      <HintPath>..\..\rustserver\RustDedicated_Data\Managed\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>..\..\rustserver\RustDedicated_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Microsoft\CodeAnalysis\EmbeddedAttribute.cs" />
+    <Compile Include="Network\BaseNetwork.cs" />
+    <Compile Include="Network\Client.cs" />
+    <Compile Include="Network\Connection.cs" />
+    <Compile Include="Network\Defines.cs" />
+    <Compile Include="Network\DemoClient.cs" />
+    <Compile Include="Network\IClientCallback.cs" />
+    <Compile Include="Network\IDemoHeader.cs" />
+    <Compile Include="Network\INetworkCryptography.cs" />
+    <Compile Include="Network\IServerCallback.cs" />
+    <Compile Include="Network\Message.cs" />
+    <Compile Include="Network\NetRead.cs" />
+    <Compile Include="Network\Networkable.cs" />
+    <Compile Include="Network\NetworkHandler.cs" />
+    <Compile Include="Network\NetWrite.cs" />
+    <Compile Include="Network\Priority.cs" />
+    <Compile Include="Network\SendInfo.cs" />
+    <Compile Include="Network\SendMethod.cs" />
+    <Compile Include="Network\Server.cs" />
+    <Compile Include="Network\Stats.cs" />
+    <Compile Include="Network\TimeAverageValue.cs" />
+    <Compile Include="Network\TimeAverageValueData.cs" />
+    <Compile Include="Network\TimeAverageValueLookup.cs" />
+    <Compile Include="Network\TimeEx.cs" />
+    <Compile Include="Network\Visibility\Group.cs" />
+    <Compile Include="Network\Visibility\Manager.cs" />
+    <Compile Include="Network\Visibility\Provider.cs" />
+    <Compile Include="Network\Visibility\Subscriber.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="System\Runtime\CompilerServices\IsUnmanagedAttribute.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

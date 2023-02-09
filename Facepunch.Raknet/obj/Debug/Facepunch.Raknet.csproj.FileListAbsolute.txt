@@ -1,0 +1,2 @@
+D:\Rust\Dev\DLLs\Facepunch.Raknet\obj\Debug\Facepunch.Raknet.csproj.AssemblyReference.cache
+D:\Rust\Dev\DLLs\Facepunch.Raknet\obj\Debug\Facepunch.Raknet.csproj.CoreCompileInputs.cache
